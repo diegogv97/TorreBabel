@@ -1,0 +1,26 @@
+NOTAS:
+colores y: amarillo, b: azul, g: verde, w: blanco, e: vacio, n: tope superior
+    
+
+
+INTERFAZ GRAFICA:
+1- SELECCIONAR ARCHIVO DE ENTRADA
+2- MOSTRAR TORRE
+3- MOSTRAR PASOS DE A*
+
+
+
+LOGICA:
+1- CALCULAR NODOS PROXIMOS
+2- CALCULAR VALOR DE G
+3- MOVERME ENTRE NODOS
+
+
+PARSER (de ser necesario)
+:
+1- LEER ENTRADA Y FORMAR TORRE INICIAL Y META
+2- DETECCION DE ERRORES EN ENTRADA (NUMERO DE FILAS/COLUMNAS INCORRECTAS,
+                                    COLORES INCORRECTOS)
+
+
+                                   
