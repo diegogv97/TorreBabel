@@ -60,5 +60,15 @@ public class Nodo {
     public void setEstadoTorre(Estado estadoTorre) {
         this.estadoTorre = estadoTorre;
     }
+
+    public String getDescMovimientoPredecesor() {
+        return descMovimientoPredecesor;
+    }
+
+    public void setDescMovimientoPredecesor(String descMovimientoPredecesor) {
+        this.descMovimientoPredecesor = descMovimientoPredecesor;
+    }
+    
+    
     
 }
