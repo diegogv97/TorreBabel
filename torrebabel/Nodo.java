@@ -8,9 +8,11 @@ public class Nodo {
     private String descMovimientoPredecesor = "";
     private Estado estadoTorre;
 
-    public Nodo(int valorG, Nodo predecesor, String descMovimientoPrececesor,  
+    public Nodo(int valorG,int valorH, Nodo predecesor, String descMovimientoPrececesor,  
             Estado estadoTorre) {
         this.valorG = valorG;
+        this.valorH = valorH;
+        this.valorF = valorG + valorH;
         this.predecesor = predecesor;
         this.descMovimientoPredecesor = descMovimientoPrececesor;
         this.estadoTorre = estadoTorre;

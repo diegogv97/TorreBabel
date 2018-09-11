@@ -32,11 +32,39 @@ public class TorreBabel {
         torre[4][2] = 'l';
         torre[4][3] = 'ñ';
         
-
+        char torre2[][] = new char[5][4];
+        
+        
+        torre2[0][0] = 'n';
+        torre2[0][1] = 'e';
+        torre2[0][2] = 'n';
+        torre2[0][3] = 'n';
+       
+        torre2[1][0] = 'a';
+        torre2[1][1] = 's';
+        torre2[1][2] = 'd';
+        torre2[1][3] = 'f';
+       
+        torre2[2][0] = 'q';
+        torre2[2][1] = 'w';
+        torre2[2][2] = '3';
+        torre2[2][3] = 'r';
+        
+        torre2[3][0] = 'c';
+        torre2[3][1] = 'v';
+        torre2[3][2] = 'z';
+        torre2[3][3] = 'x';
+        
+        torre2[4][0] = 'j';
+        torre2[4][1] = 'k';
+        torre2[4][2] = 'l';
+        torre2[4][3] = 'ñ';
 
         Estado eInicial = new Estado(5,4, torre);
         eInicial.printTorre();
-        AStar aEstrella = new AStar(eInicial);
+        Estado eFinal = new Estado(5,4, torre2);
+        eFinal.printTorre();
+        AStar aEstrella = new AStar(eFinal);
         aEstrella.calcularCamino(eInicial);
         
     }

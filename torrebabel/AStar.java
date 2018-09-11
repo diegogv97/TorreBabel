@@ -22,13 +22,13 @@ public class AStar {
     }
     
     
-    //realiza calculo de H segun la Distancia de Hamming desde Nodo n hasta meta
-    public void calcH(Nodo n){
+    //realiza calculo de H segun la Distancia de Hamming desde estado e hasta meta
+    public int calcH(Estado e){
         int H = 0;
         int filas = meta.getEstadoTorre().getFilas();
         int columnas = meta.getEstadoTorre().getColumnas();
         char[][] torreMeta = meta.getEstadoTorre().getTorre();
-        char[][] torreNodo = n.getEstadoTorre().getTorre();
+        char[][] torreNodo = e.getTorre();
         for (int fil = 0; fil < filas; fil++){
             for (int col = 0; col < columnas; col++){
                 
@@ -38,7 +38,20 @@ public class AStar {
                 
             }
         }
-        n.setValorH(H);
+        return H;
+    }
+    
+    
+    private int indexAbiertoMenorF(){
+        int retI = (int) (Math.random() * (abiertos.size()-1)) + 1;
+        int f = abiertos.get(retI).getValorF();
+        for (int i = 0; i < abiertos.size(); i++){
+            if (abiertos.get(i).getValorF() < f){
+                f = abiertos.get(i).getValorF();
+                retI = i;
+            }
+        }
+        return retI;
     }
     
     //verifica que no haya un nodo abierto con el mismo estado. Si existe, 
@@ -60,11 +73,13 @@ public class AStar {
             }
         }
         //si no encontró uno igual, lo inserta
-        abiertos.add(new Nodo(4, nActual, desc  , nuevo));
+        int valH = calcH(nuevo);
+        abiertos.add(new Nodo(costo, valH, nActual, desc  , nuevo));
     }
     
     //calcula todos los posibles nodos que se generan a partir de un nodo actual
     private void nodosProximos(Nodo nActual){
+        cerrados.add(nActual);
         int filas = nActual.getEstadoTorre().getFilas();
         int columnas = nActual.getEstadoTorre().getColumnas();
         char[][] temp;
@@ -76,14 +91,16 @@ public class AStar {
             Estado nuevo = new Estado(filas, columnas, temp);
             nuevo.rotarFilaDer(fil);
             desc = "rotar fila " + (fil+1) + " a la derecha";
-            agregarAbierto(nActual, 4, nuevo, desc);
+            int costo = nActual.getValorG() + 4;
+            agregarAbierto(nActual, costo, nuevo, desc);
             
             temp = new char[filas][columnas]; 
             copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
             nuevo = new Estado(filas, columnas, temp);
             nuevo.rotarFilaIzq(fil);
             desc = "rotar fila " + (fil+1) + " a la izquierda";
-            agregarAbierto(nActual, 4, nuevo, desc);
+            costo = nActual.getValorG() + 4;
+            agregarAbierto(nActual, costo, nuevo, desc);
         }
         
         //movimientos verticales de bolitas por muesca vacia
@@ -92,10 +109,16 @@ public class AStar {
         Estado nuevo = new Estado(filas, columnas, temp);
         int colVacia = nuevo.getiColMuescaVacia();
         int filVacia = nuevo.getiFilMuestaVacia();
-        System.out.println(filVacia);
         if (filVacia == 0){
             nuevo.subirBola(filVacia+1, colVacia);
             desc = "subir bolita de fila " + (filVacia+1) + " columna " + (colVacia+1);
+            int costo = nActual.getValorG() + 2;
+            agregarAbierto(nActual, 2, nuevo, desc);
+        }
+        else if(filVacia == meta.getEstadoTorre().getFilas()-1){
+            nuevo.bajarBola(filVacia-1, colVacia);
+            desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
+            int costo = nActual.getValorG() + 2;
             agregarAbierto(nActual, 2, nuevo, desc);
         }
         else{
@@ -104,6 +127,8 @@ public class AStar {
             nuevo = new Estado(filas, columnas, temp);
             nuevo.bajarBola(filVacia-1, colVacia);
             desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
+            int costo = nActual.getValorG() + 2;
+            
             agregarAbierto(nActual, 2, nuevo, desc);
             
             temp = new char[filas][columnas]; 
@@ -114,14 +139,37 @@ public class AStar {
             agregarAbierto(nActual, 2, nuevo, desc);
         }
         
-        for (Nodo n : abiertos){
-            System.out.println(n.getDescMovimientoPredecesor());
-            n.getEstadoTorre().printTorre();
-        }
+        
     }
     
     
     public void calcularCamino(Estado eActual){
-        nodosProximos(meta);
+        int h = calcH(eActual);
+        Nodo nActual = new Nodo(0, h, null, "", eActual);
+        int i = 0;
+        while (true){
+            System.out.println("Iteracion : " +i); 
+            i++;
+            nodosProximos(nActual);
+            int iMenor = indexAbiertoMenorF();
+            Nodo menor = abiertos.get(iMenor);
+            abiertos.remove(iMenor);
+            if (menor.getEstadoTorre().isTorreIgual(meta.getEstadoTorre())){
+                printCamino(menor);
+                break;
+            }
+            nActual = menor;
+        }
+        
+    }
+    
+    public void printCamino(Nodo n){
+        while(n != null){
+            n.getEstadoTorre().printTorre();
+            System.out.println(n.getDescMovimientoPredecesor());
+            System.out.println();
+            printCamino(n.getPredecesor());
+            break;
+        }
     }
 }
