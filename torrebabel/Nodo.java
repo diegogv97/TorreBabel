@@ -71,6 +71,4 @@ public class Nodo {
         this.descMovimientoPredecesor = descMovimientoPredecesor;
     }
     
-    
-    
 }

@@ -11,10 +11,10 @@ public class TorreBabel {
         torre[0][2] = 'n';
         torre[0][3] = 'n';
        
-        torre[1][0] = 'a';
+        torre[1][0] = 'e';
         torre[1][1] = 'a';
-        torre[1][2] = 'v';
-        torre[1][3] = 'e';
+        torre[1][2] = 'a';
+        torre[1][3] = 'v';
        
         torre[2][0] = 'y';
         torre[2][1] = 'v';
@@ -70,30 +70,3 @@ public class TorreBabel {
     
 }
 
-/*
-        torre[0][1] = 'n';
-        torre[0][0] = 'e';
-        torre[0][2] = 'n';
-        torre[0][3] = 'n';
-       
-        torre[1][0] = 'w';
-        torre[1][1] = 'w';
-        torre[1][2] = 'w';
-        torre[1][3] = 'w';
-        
-        torre[2][0] = 'b';
-        torre[2][1] = 'b';
-        torre[2][2] = 'b';
-        torre[2][3] = 'b';
-        
-        torre[3][0] = 'g';
-        torre[3][1] = 'g';
-        torre[3][2] = 'g';
-        torre[3][3] = 'g';
-        
-        torre[4][0] = 'y';
-        torre[4][1] = 'y';
-        torre[4][2] = 'y';
-        torre[4][3] = 'y';
-
-*/

@@ -1,6 +1,5 @@
 package torrebabel;
 
-
 import java.util.ArrayList;
 
 
@@ -45,7 +44,7 @@ public class AStar {
         return H;
     }
     
-    
+    //devuelve el index nodo con mejor valor F dentro del array abiertos
     private int indexAbiertoMenorF(){
         int retI = (int) (Math.random() * (abiertos.size()-1)) + 1;
         int f = abiertos.get(retI).getValorF();
@@ -120,22 +119,25 @@ public class AStar {
             int costo = nActual.getValorG() + COSTO_VERTICAL;
             agregarAbierto(nActual, costo, nuevo, desc);
         }
-        else if(filVacia == meta.getEstadoTorre().getFilas()-1){
-            nuevo.bajarBola(filVacia-1, colVacia);
-            desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
-            int costo = nActual.getValorG() + COSTO_VERTICAL;
-            agregarAbierto(nActual, costo, nuevo, desc);
+        else if(filVacia == meta.getEstadoTorre().getFilas()-1){ //no intente bajar una pared
+            if(nuevo.getTorre()[filVacia-1][colVacia] != 'n'){
+                nuevo.bajarBola(filVacia-1, colVacia);
+                desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
+                int costo = nActual.getValorG() + COSTO_VERTICAL;
+                agregarAbierto(nActual, costo, nuevo, desc);
+            }
         }
         else{
-            temp = new char[filas][columnas]; 
-            copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
-            nuevo = new Estado(filas, columnas, temp);
-            nuevo.bajarBola(filVacia-1, colVacia);
-            desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
+            if(nuevo.getTorre()[filVacia-1][colVacia] != 'n'){  //no intente bajar una pared
+                temp = new char[filas][columnas]; 
+                copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
+                nuevo = new Estado(filas, columnas, temp);
+                nuevo.bajarBola(filVacia-1, colVacia);
+                desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
+                int costo = nActual.getValorG() + COSTO_VERTICAL;
+                agregarAbierto(nActual, costo, nuevo, desc);
+            }
             int costo = nActual.getValorG() + COSTO_VERTICAL;
-            
-            agregarAbierto(nActual, costo, nuevo, desc);
-            
             temp = new char[filas][columnas]; 
             copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
             nuevo = new Estado(filas, columnas, temp);
@@ -161,13 +163,7 @@ public class AStar {
                 break;
             }
             nActual = menor;
-            for (Nodo n : cerrados){
-                //n.getEstadoTorre().printTorre();
-                //System.out.println(n.getDescMovimientoPredecesor());
-                //System.out.println();
-            }
         }
-        
     }
     
     public void printCamino(Nodo n){
