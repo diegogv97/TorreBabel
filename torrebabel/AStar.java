@@ -1,9 +1,12 @@
 package torrebabel;
 
-
 import java.util.ArrayList;
 
+
 public class AStar {
+    final int COSTO_VERTICAL = 1;
+    final int COSTO_HORIZONTAL = 1;
+    
     private Nodo meta;
     private ArrayList<Nodo> abiertos = new ArrayList<>();
     private ArrayList<Nodo> cerrados = new ArrayList<>();
@@ -12,14 +15,23 @@ public class AStar {
         this.meta = new Nodo(meta);
     }
     
+    //copia los datos de una estructura char[][] a otra char[][]
+    private void copiarDatosTorre(char[][] origen, char[][] destino){
+        for (int fil = 0; fil < meta.getEstadoTorre().getFilas(); fil++){
+           for (int col = 0; col < meta.getEstadoTorre().getColumnas(); col++){
+               origen[fil][col] = destino[fil][col];
+           }
+        }
+    }
     
-    //realiza calculo de H segun la Distancia de Hamming desde Nodo n hasta meta
-    public void calcH(Nodo n){
+    
+    //realiza calculo de H segun la Distancia de Hamming desde estado e hasta meta
+    public int calcH(Estado e){
         int H = 0;
         int filas = meta.getEstadoTorre().getFilas();
         int columnas = meta.getEstadoTorre().getColumnas();
         char[][] torreMeta = meta.getEstadoTorre().getTorre();
-        char[][] torreNodo = n.getEstadoTorre().getTorre();
+        char[][] torreNodo = e.getTorre();
         for (int fil = 0; fil < filas; fil++){
             for (int col = 0; col < columnas; col++){
                 
@@ -29,28 +41,138 @@ public class AStar {
                 
             }
         }
-        n.setValorH(H);
+        return H;
+    }
+    
+    //devuelve el index nodo con mejor valor F dentro del array abiertos
+    private int indexAbiertoMenorF(){
+        int retI = (int) (Math.random() * (abiertos.size()-1)) + 1;
+        int f = abiertos.get(retI).getValorF();
+        for (int i = 0; i < abiertos.size(); i++){
+            if (abiertos.get(i).getValorF() < f){
+                f = abiertos.get(i).getValorF();
+                retI = i;
+            }
+        }
+        return retI;
+    }
+    
+    //verifica que no haya un nodo abierto con el mismo estado. Si existe, 
+    //combrueba si el valor g es menor. De ser así, modifica su predecesor
+    private void agregarAbierto(Nodo nActual, int costo, Estado nuevo, String desc){
+        //verifico que el nodo no esté en cerrados
+        for(Nodo n : cerrados){
+            if (n.getEstadoTorre().isTorreIgual(nuevo)){
+                return; //lo encontré cerrado, termino
+            }
+        }
+        //verifico los nodos abiertos
+        for (Nodo n : abiertos){
+            if (n.getEstadoTorre().isTorreIgual(nuevo)){
+                if(n.getValorG() > costo){
+                    n.setPredecesor(nActual);
+                    n.setDescMovimientoPredecesor(desc);
+                }
+                return; //encontró uno igual. termina
+            }
+        }
+        //si no encontró uno igual, lo inserta
+        int valH = calcH(nuevo);
+        abiertos.add(new Nodo(costo, valH, nActual, desc  , nuevo));
+    }
+    
+    //calcula todos los posibles nodos que se generan a partir de un nodo actual
+    private void nodosProximos(Nodo nActual){
+        cerrados.add(nActual);
+        int filas = nActual.getEstadoTorre().getFilas();
+        int columnas = nActual.getEstadoTorre().getColumnas();
+        char[][] temp;
+        String desc;
+        //calculo de todos los movimientos rotacionales de filas
+        for(int fil = 0; fil < filas; fil++){
+            temp = new char[filas][columnas]; 
+            copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
+            Estado nuevo = new Estado(filas, columnas, temp);
+            nuevo.rotarFilaDer(fil);
+            desc = "rotar fila " + (fil+1) + " a la derecha";
+            int costo = nActual.getValorG() + COSTO_HORIZONTAL;
+            agregarAbierto(nActual, costo, nuevo, desc);
+            
+            temp = new char[filas][columnas]; 
+            copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
+            nuevo = new Estado(filas, columnas, temp);
+            nuevo.rotarFilaIzq(fil);
+            desc = "rotar fila " + (fil+1) + " a la izquierda";
+            costo = nActual.getValorG() + COSTO_HORIZONTAL;
+            agregarAbierto(nActual, costo, nuevo, desc);
+        }
+        
+        //movimientos verticales de bolitas por muesca vacia
+        temp = new char[filas][columnas]; 
+        copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
+        Estado nuevo = new Estado(filas, columnas, temp);
+        int colVacia = nuevo.getiColMuescaVacia();
+        int filVacia = nuevo.getiFilMuestaVacia();
+        if (filVacia == 0){
+            nuevo.subirBola(filVacia+1, colVacia);
+            desc = "subir bolita de fila " + (filVacia+2) + " columna " + (colVacia+1);
+            int costo = nActual.getValorG() + COSTO_VERTICAL;
+            agregarAbierto(nActual, costo, nuevo, desc);
+        }
+        else if(filVacia == meta.getEstadoTorre().getFilas()-1){ //no intente bajar una pared
+            if(nuevo.getTorre()[filVacia-1][colVacia] != 'n'){
+                nuevo.bajarBola(filVacia-1, colVacia);
+                desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
+                int costo = nActual.getValorG() + COSTO_VERTICAL;
+                agregarAbierto(nActual, costo, nuevo, desc);
+            }
+        }
+        else{
+            if(nuevo.getTorre()[filVacia-1][colVacia] != 'n'){  //no intente bajar una pared
+                temp = new char[filas][columnas]; 
+                copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
+                nuevo = new Estado(filas, columnas, temp);
+                nuevo.bajarBola(filVacia-1, colVacia);
+                desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
+                int costo = nActual.getValorG() + COSTO_VERTICAL;
+                agregarAbierto(nActual, costo, nuevo, desc);
+            }
+            int costo = nActual.getValorG() + COSTO_VERTICAL;
+            temp = new char[filas][columnas]; 
+            copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
+            nuevo = new Estado(filas, columnas, temp);
+            nuevo.subirBola(filVacia+1, colVacia);
+            desc = "subir bolita de fila " + (filVacia+2) + " columna " + (colVacia+1);
+            agregarAbierto(nActual, costo, nuevo, desc);
+        }
+        
+        
     }
     
     
     public void calcularCamino(Estado eActual){
-        
+        int h = calcH(eActual);
+        Nodo nActual = new Nodo(0, h, null, "", eActual);
+        while (true){
+            nodosProximos(nActual);
+            int iMenor = indexAbiertoMenorF();
+            Nodo menor = abiertos.get(iMenor);
+            abiertos.remove(iMenor);
+            if (menor.getEstadoTorre().isTorreIgual(meta.getEstadoTorre())){
+                printCamino(menor);
+                break;
+            }
+            nActual = menor;
+        }
     }
     
-    private void nodosProximos(Nodo nActual){
-        Estado eActual = nActual.getEstadoTorre();
-        Estado temp = eActual;
-        int filas = eActual.getFilas();
-        for(int fil = 0; fil < filas-1; fil++){
-            
-            temp.rotarFilaDer(fil);
-            abiertos.add(new Nodo(4, nActual, "rotar fila" + fil + "a la derecha"  , temp));
-            temp = eActual;
-           
-            temp.rotarFilaIzq(fil);
-            abiertos.add(new Nodo(4, nActual, "rotar fila" + fil + "a la izquierda", temp));
-            temp = eActual;
-            
+    public void printCamino(Nodo n){
+        while(n != null){
+            n.getEstadoTorre().printTorre();
+            System.out.println(n.getDescMovimientoPredecesor());
+            System.out.println();
+            printCamino(n.getPredecesor());
+            break;
         }
     }
 }

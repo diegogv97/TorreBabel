@@ -11,10 +11,10 @@ public class Estado {
     private int iFilMuestaVacia;
     
     
-    public Estado(int filas, int columnas){
+    public Estado(int filas, int columnas, char[][] torre){
         this.filas = filas;
         this.columnas = columnas;
-        this.torre = new char[filas][columnas];
+        this.torre = torre;
         actualizarMuescaVacia();
     }
 
@@ -32,6 +32,7 @@ public class Estado {
 
     public void setTorre(char[][] torre) {
         this.torre = torre;
+        actualizarMuescaVacia();
     }
 
     public int getFilas() {

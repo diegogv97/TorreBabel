@@ -8,9 +8,11 @@ public class Nodo {
     private String descMovimientoPredecesor = "";
     private Estado estadoTorre;
 
-    public Nodo(int valorG, Nodo predecesor, String descMovimientoPrececesor,  
+    public Nodo(int valorG,int valorH, Nodo predecesor, String descMovimientoPrececesor,  
             Estado estadoTorre) {
         this.valorG = valorG;
+        this.valorH = valorH;
+        this.valorF = valorG + valorH;
         this.predecesor = predecesor;
         this.descMovimientoPredecesor = descMovimientoPrececesor;
         this.estadoTorre = estadoTorre;
@@ -59,6 +61,14 @@ public class Nodo {
 
     public void setEstadoTorre(Estado estadoTorre) {
         this.estadoTorre = estadoTorre;
+    }
+
+    public String getDescMovimientoPredecesor() {
+        return descMovimientoPredecesor;
+    }
+
+    public void setDescMovimientoPredecesor(String descMovimientoPredecesor) {
+        this.descMovimientoPredecesor = descMovimientoPredecesor;
     }
     
 }
