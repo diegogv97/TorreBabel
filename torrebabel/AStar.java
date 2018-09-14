@@ -14,6 +14,16 @@ public class AStar {
     public AStar(Estado meta){
         this.meta = new Nodo(meta);
     }
+
+    public Nodo getMeta() {
+        return meta;
+    }
+
+    public void setMeta(Nodo meta) {
+        this.meta = meta;
+    }
+    
+    
     
     //copia los datos de una estructura char[][] a otra char[][]
     private void copiarDatosTorre(char[][] origen, char[][] destino){
@@ -59,7 +69,8 @@ public class AStar {
     
     //verifica que no haya un nodo abierto con el mismo estado. Si existe, 
     //combrueba si el valor g es menor. De ser así, modifica su predecesor
-    private void agregarAbierto(Nodo nActual, int costo, Estado nuevo, String desc){
+    private void agregarAbierto(Nodo nActual, int costo, Estado nuevo, 
+                          tipoMovimiento mov, int filMov, int colMov){
         //verifico que el nodo no esté en cerrados
         for(Nodo n : cerrados){
             if (n.getEstadoTorre().isTorreIgual(nuevo)){
@@ -71,14 +82,16 @@ public class AStar {
             if (n.getEstadoTorre().isTorreIgual(nuevo)){
                 if(n.getValorG() > costo){
                     n.setPredecesor(nActual);
-                    n.setDescMovimientoPredecesor(desc);
+                    n.setMovmientoPredecesor(mov);
+                    n.setFilaMovPredecesor(filMov);
+                    n.setColMovPredecesor(colMov);
                 }
                 return; //encontró uno igual. termina
             }
         }
         //si no encontró uno igual, lo inserta
         int valH = calcH(nuevo);
-        abiertos.add(new Nodo(costo, valH, nActual, desc  , nuevo));
+        abiertos.add(new Nodo(costo, valH, nActual, mov, nuevo, filMov, colMov));
     }
     
     //calcula todos los posibles nodos que se generan a partir de un nodo actual
@@ -94,17 +107,15 @@ public class AStar {
             copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
             Estado nuevo = new Estado(filas, columnas, temp);
             nuevo.rotarFilaDer(fil);
-            desc = "rotar fila " + (fil+1) + " a la derecha";
             int costo = nActual.getValorG() + COSTO_HORIZONTAL;
-            agregarAbierto(nActual, costo, nuevo, desc);
+            agregarAbierto(nActual, costo, nuevo, tipoMovimiento.ROTAR_DERECHA, (fil+1), 0);
             
             temp = new char[filas][columnas]; 
             copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
             nuevo = new Estado(filas, columnas, temp);
             nuevo.rotarFilaIzq(fil);
-            desc = "rotar fila " + (fil+1) + " a la izquierda";
             costo = nActual.getValorG() + COSTO_HORIZONTAL;
-            agregarAbierto(nActual, costo, nuevo, desc);
+            agregarAbierto(nActual, costo, nuevo, tipoMovimiento.ROTAR_IZQUIERDA, (fil+1), 0);
         }
         
         //movimientos verticales de bolitas por muesca vacia
@@ -115,16 +126,14 @@ public class AStar {
         int filVacia = nuevo.getiFilMuestaVacia();
         if (filVacia == 0){
             nuevo.subirBola(filVacia+1, colVacia);
-            desc = "subir bolita de fila " + (filVacia+2) + " columna " + (colVacia+1);
             int costo = nActual.getValorG() + COSTO_VERTICAL;
-            agregarAbierto(nActual, costo, nuevo, desc);
+            agregarAbierto(nActual, costo, nuevo, tipoMovimiento.SUBIR_BOLITA, (filVacia+2), (colVacia+1));
         }
         else if(filVacia == meta.getEstadoTorre().getFilas()-1){ //no intente bajar una pared
             if(nuevo.getTorre()[filVacia-1][colVacia] != 'n'){
                 nuevo.bajarBola(filVacia-1, colVacia);
-                desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
                 int costo = nActual.getValorG() + COSTO_VERTICAL;
-                agregarAbierto(nActual, costo, nuevo, desc);
+                agregarAbierto(nActual, costo, nuevo, tipoMovimiento.BAJAR_BOLITA, (filVacia), (colVacia+1));
             }
         }
         else{
@@ -133,17 +142,15 @@ public class AStar {
                 copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
                 nuevo = new Estado(filas, columnas, temp);
                 nuevo.bajarBola(filVacia-1, colVacia);
-                desc = "bajar bolita de fila " + (filVacia) + " columna " + (colVacia+1);
                 int costo = nActual.getValorG() + COSTO_VERTICAL;
-                agregarAbierto(nActual, costo, nuevo, desc);
+                agregarAbierto(nActual, costo, nuevo, tipoMovimiento.BAJAR_BOLITA, (filVacia), (colVacia+1));
             }
             int costo = nActual.getValorG() + COSTO_VERTICAL;
             temp = new char[filas][columnas]; 
             copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
             nuevo = new Estado(filas, columnas, temp);
             nuevo.subirBola(filVacia+1, colVacia);
-            desc = "subir bolita de fila " + (filVacia+2) + " columna " + (colVacia+1);
-            agregarAbierto(nActual, costo, nuevo, desc);
+            agregarAbierto(nActual, costo, nuevo, tipoMovimiento.SUBIR_BOLITA, (filVacia+2), (colVacia+1));
         }
         
         
@@ -151,15 +158,19 @@ public class AStar {
     
     
     public void calcularCamino(Estado eActual){
+        if(!abiertos.isEmpty()){
+            abiertos = new ArrayList<>();
+            cerrados = new ArrayList<>();
+        }
         int h = calcH(eActual);
-        Nodo nActual = new Nodo(0, h, null, "", eActual);
+        Nodo nActual = new Nodo(0, h, null, null, eActual, 0,0);
         while (true){
             nodosProximos(nActual);
             int iMenor = indexAbiertoMenorF();
             Nodo menor = abiertos.get(iMenor);
             abiertos.remove(iMenor);
             if (menor.getEstadoTorre().isTorreIgual(meta.getEstadoTorre())){
-                printCamino(menor);
+                meta = menor;
                 break;
             }
             nActual = menor;
@@ -169,7 +180,12 @@ public class AStar {
     public void printCamino(Nodo n){
         while(n != null){
             n.getEstadoTorre().printTorre();
-            System.out.println(n.getDescMovimientoPredecesor());
+            tipoMovimiento mov =  n.getMovmientoPredecesor();
+            System.out.print("Movimiento: " + mov);
+            System.out.print("   Fila: " +n.getFilaMovPredecesor());
+            if (mov == tipoMovimiento.BAJAR_BOLITA || mov == tipoMovimiento.SUBIR_BOLITA ){
+                System.out.print("   Columna: " +n.getColMovPredecesor());
+            }
             System.out.println();
             printCamino(n.getPredecesor());
             break;

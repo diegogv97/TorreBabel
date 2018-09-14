@@ -65,7 +65,7 @@ public class TorreBabel {
         eFinal.printTorre();
         AStar aEstrella = new AStar(eFinal);
         aEstrella.calcularCamino(eInicial);
-        
+        aEstrella.printCamino(aEstrella.getMeta());
     }
     
 }

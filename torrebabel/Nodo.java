@@ -5,23 +5,27 @@ public class Nodo {
     private int valorG;
     private int valorF;
     private Nodo predecesor;
-    private String descMovimientoPredecesor = "";
+    private tipoMovimiento movmientoPredecesor;
+    private int filaMovPredecesor;
+    private int colMovPredecesor;
     private Estado estadoTorre;
 
-    public Nodo(int valorG,int valorH, Nodo predecesor, String descMovimientoPrececesor,  
-            Estado estadoTorre) {
+    public Nodo(int valorG,int valorH, Nodo predecesor,  tipoMovimiento movmientoPredecesor,  
+            Estado estadoTorre, int filaMovPredecesor, int colMovPredecesor) {
         this.valorG = valorG;
         this.valorH = valorH;
         this.valorF = valorG + valorH;
         this.predecesor = predecesor;
-        this.descMovimientoPredecesor = descMovimientoPrececesor;
+        this.movmientoPredecesor = movmientoPredecesor;
+        this.filaMovPredecesor = filaMovPredecesor;
+        this.colMovPredecesor = colMovPredecesor;
         this.estadoTorre = estadoTorre;
     }
     
     public Nodo(Estado estadoTorre) {
         this.valorG = 0;
         this.predecesor = null;
-        this.descMovimientoPredecesor = "";
+        this.movmientoPredecesor = null;
         this.estadoTorre = estadoTorre;
     }
 
@@ -63,12 +67,30 @@ public class Nodo {
         this.estadoTorre = estadoTorre;
     }
 
-    public String getDescMovimientoPredecesor() {
-        return descMovimientoPredecesor;
+    public tipoMovimiento getMovmientoPredecesor() {
+        return movmientoPredecesor;
     }
 
-    public void setDescMovimientoPredecesor(String descMovimientoPredecesor) {
-        this.descMovimientoPredecesor = descMovimientoPredecesor;
+    public void setMovmientoPredecesor(tipoMovimiento movmientoPredecesor) {
+        this.movmientoPredecesor = movmientoPredecesor;
     }
+
+    public int getFilaMovPredecesor() {
+        return filaMovPredecesor;
+    }
+
+    public void setFilaMovPredecesor(int filaMovPredecesor) {
+        this.filaMovPredecesor = filaMovPredecesor;
+    }
+
+    public int getColMovPredecesor() {
+        return colMovPredecesor;
+    }
+
+    public void setColMovPredecesor(int colMovPredecesor) {
+        this.colMovPredecesor = colMovPredecesor;
+    }
+
+    
     
 }
