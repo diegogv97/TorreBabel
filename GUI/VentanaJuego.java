@@ -277,6 +277,7 @@ public class VentanaJuego extends JFrame implements ActionListener{
 				titulo = "Error al cargar el archivo";
 				
 				txtNotas.setText("Archivo base:\n" + ruta);
+				txtNotas.setVisible(true);
 			}else if(item.getSource() == mntmManual){
 					
 			}
