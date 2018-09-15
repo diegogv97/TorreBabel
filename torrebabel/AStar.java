@@ -1,6 +1,7 @@
 package torrebabel;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 
 public class AStar {
@@ -190,5 +191,16 @@ public class AStar {
             printCamino(n.getPredecesor());
             break;
         }
+    }
+    
+    public Stack<Estado> getCaminoEstados(Nodo n, Stack<Estado> estados){
+        while(n != null){
+        	estados.push(n.getEstadoTorre());
+        	
+        	getCaminoEstados(n.getPredecesor(), estados);
+        	break;
+        }
+        
+        return estados;
     }
 }
