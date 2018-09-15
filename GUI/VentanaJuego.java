@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import java.awt.TextArea;
 
 public class VentanaJuego extends JFrame implements ActionListener{
 	
@@ -32,6 +33,8 @@ public class VentanaJuego extends JFrame implements ActionListener{
 	
 	JLabel lblMuescaVacia, lblAvance;
 	JLabel[][] lblBolas = new JLabel[5][4];
+	
+	TextArea txtNotas;
 	
 	ImageIcon imagen = new ImageIcon("src/Imagenes/Fondo.png");
 	ImageIcon imgMuescaVacia = new ImageIcon("src/Imagenes/Vacia.png");
@@ -218,6 +221,12 @@ public class VentanaJuego extends JFrame implements ActionListener{
 		lblAvance.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAvance.setBounds(619, 154, 124, 67);
 		panelJuego.add(lblAvance);
+		
+		txtNotas = new TextArea();
+		txtNotas.setEditable(false);
+		txtNotas.setBounds(529, 301, 363, 259);
+		panelJuego.add(txtNotas);
+		txtNotas.setVisible(false);
 	}
 	
 	public static void main(String[] args) {
@@ -266,6 +275,8 @@ public class VentanaJuego extends JFrame implements ActionListener{
 				String ruta = abrirExplorador();
 				mensaje = ControladorPrincipal.getInstance().evaluarArchivo(ruta);
 				titulo = "Error al cargar el archivo";
+				
+				txtNotas.setText("Archivo base:\n" + ruta);
 			}else if(item.getSource() == mntmManual){
 					
 			}
@@ -324,6 +335,7 @@ public class VentanaJuego extends JFrame implements ActionListener{
 		btnResolver.setEnabled(false);
 		btnAtras.setEnabled(false);
 		btnSiguiente.setEnabled(false);
+		txtNotas.setVisible(false);
 	}
 	
 	private void mover(int mov){
