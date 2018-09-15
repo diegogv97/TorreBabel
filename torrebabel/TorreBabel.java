@@ -2,8 +2,61 @@
 package torrebabel;
 
 public class TorreBabel {
+	private char torreI[][] = new char[5][4];
+	private char torreF[][] = new char[5][4];
+	private Estado eInicial;
+	private Estado eFinal;
 
-    public static void main(String[] args) {
+	public TorreBabel(char[][] torreI, char[][] torreF) {
+		this.torreI = torreI;
+		this.torreF = torreF;
+		eInicial = new Estado(5,4, torreI);
+        eInicial.printTorre();
+        eFinal = new Estado(5,4, torreF);
+        eFinal.printTorre();
+	}
+	
+	public void jugar(){
+		
+        AStar aEstrella = new AStar(eFinal);
+        aEstrella.calcularCamino(eInicial);
+        aEstrella.printCamino(aEstrella.getMeta());
+	}
+
+	public char[][] getTorreI() {
+		return torreI;
+	}
+
+	public void setTorreI(char[][] torreI) {
+		this.torreI = torreI;
+	}
+
+	public char[][] getTorreF() {
+		return torreF;
+	}
+
+	public void setTorreF(char[][] torreF) {
+		this.torreF = torreF;
+	}
+
+	public Estado geteInicial() {
+		return eInicial;
+	}
+
+	public void seteInicial(Estado eInicial) {
+		this.eInicial = eInicial;
+	}
+
+	public Estado geteFinal() {
+		return eFinal;
+	}
+
+	public void seteFinal(Estado eFinal) {
+		this.eFinal = eFinal;
+	}
+	
+	
+    /*public static void main(String[] args) {
         char torre[][] = new char[5][4];
         
         torre[0][0] = 'n';
@@ -66,7 +119,7 @@ public class TorreBabel {
         AStar aEstrella = new AStar(eFinal);
         aEstrella.calcularCamino(eInicial);
         aEstrella.printCamino(aEstrella.getMeta());
-    }
+    }*/
     
 }
 
