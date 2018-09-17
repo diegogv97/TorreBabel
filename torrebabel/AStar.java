@@ -203,4 +203,36 @@ public class AStar {
         
         return estados;
     }
+    
+    public String getCaminoString(Nodo n, String solucion){
+        while(n != null){
+        	
+            tipoMovimiento mov =  n.getMovmientoPredecesor();
+            
+            if(mov != null){
+            	solucion += getCaminoString(n.getPredecesor(), solucion) + "\n" + solucion;
+            	
+            	solucion += "Movimiento: " + mov;
+                System.out.print("Movimiento: " + mov);
+                solucion += "   Fila: " +n.getFilaMovPredecesor();
+                System.out.print("   Fila: " +n.getFilaMovPredecesor());
+                if (mov == tipoMovimiento.BAJAR_BOLITA || mov == tipoMovimiento.SUBIR_BOLITA ){
+                	solucion += "   Columna: " +n.getColMovPredecesor();
+                    System.out.print("   Columna: " +n.getColMovPredecesor());
+                }
+                
+                solucion += "\n";
+                System.out.println();
+            }
+            
+            solucion += n.getEstadoTorre().torreToString();
+            
+            return solucion;
+            
+            
+            
+        }
+        
+        return solucion;
+    }
 }
