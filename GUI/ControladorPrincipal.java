@@ -15,6 +15,7 @@ public class ControladorPrincipal {
 	private static final ControladorPrincipal ourInstance = new ControladorPrincipal();
 	
 	private ManejadorArchivo manejadorArchivo;
+	private String rutaArchivoBase, rutaArchivoExportado;
 	private Parser parser;
 	
 	private AStar aEstrella;
@@ -27,6 +28,8 @@ public class ControladorPrincipal {
     }
 	
 	public String evaluarArchivo(String ruta){
+		
+		rutaArchivoBase = ruta;
 		indexLista = -1;
 		
 		String mensaje = "";
@@ -118,6 +121,11 @@ public class ControladorPrincipal {
 		return listaEstado.get(indexLista).getTorre();
 	}
 	
+	public char[][] getEstadoInicial(){
+		indexLista = 0;
+		return listaEstado.get(indexLista).getTorre();
+	}
+	
 	public void resolverTorre(){		
 		aEstrella = new AStar(torreBabel.geteFinal());
 		aEstrella.calcularCamino(torreBabel.geteInicial());
@@ -130,5 +138,21 @@ public class ControladorPrincipal {
 		while(!pilaEstado.isEmpty()){
 			listaEstado.add(pilaEstado.pop());
 		}
+	}
+	
+	public String getCaminoToString(){
+		String solucion = "Archivo base:\n" + rutaArchivoBase + "\n\n" + "Configuración inicial:\n" + aEstrella.getCaminoString(aEstrella.getMeta(), "") +
+				"------ Configuración final alcanzada ------";
+		
+		return solucion;
+	}
+	
+	public boolean exportarPartida(){
+		rutaArchivoExportado = manejadorArchivo.definirNombreArchivo(rutaArchivoBase);
+		return manejadorArchivo.escribirArchivo(rutaArchivoExportado, getCaminoToString());
+	}
+	
+	public String getRutaExportada(){
+		return rutaArchivoExportado;
 	}
 }

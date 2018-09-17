@@ -29,7 +29,8 @@ public class VentanaJuego extends JFrame implements ActionListener{
 	JMenuItem mntmNuevo, mntmCargarArchivo, mntmManual;
 	int[] posMVacia = {22, 142, 262, 382};
 	
-	JButton btnResolver, btnAtras, btnSiguiente;
+	JButton btnResolver, btnReiniciar, btnAtras, btnSiguiente;
+	JLabel lblRutaexportacion;
 	
 	JLabel lblMuescaVacia, lblAvance;
 	JLabel[][] lblBolas = new JLabel[5][4];
@@ -43,6 +44,7 @@ public class VentanaJuego extends JFrame implements ActionListener{
 	ImageIcon imgBolaW = new ImageIcon("src/Imagenes/BolaW.png");
 	ImageIcon imgBolaY = new ImageIcon("src/Imagenes/BolaY.png");
 	ImageIcon bolaB, bolaG, bolaW, bolaY;
+	private JButton btnExportarSolucin;
 	
 	public VentanaJuego() {
 		
@@ -177,10 +179,14 @@ public class VentanaJuego extends JFrame implements ActionListener{
 					btnSiguiente.setEnabled(true);
 				}
 				btnResolver.setEnabled(false);
+				btnReiniciar.setEnabled(true);
+				btnExportarSolucin.setEnabled(true);
+				
+				txtNotas.setText(ControladorPrincipal.getInstance().getCaminoToString());
 			}
 		});
 		btnResolver.setEnabled(false);
-		btnResolver.setBounds(619, 43, 124, 33);
+		btnResolver.setBounds(551, 43, 124, 33);
 		panelJuego.add(btnResolver);
 		
 		lblMuescaVacia = new JLabel("");
@@ -201,7 +207,7 @@ public class VentanaJuego extends JFrame implements ActionListener{
 		});
 		btnAtras.setEnabled(false);
 		btnAtras.setFont(new Font("Arial Black", Font.BOLD, 24));
-		btnAtras.setBounds(529, 147, 80, 80);
+		btnAtras.setBounds(551, 124, 80, 80);
 		panelJuego.add(btnAtras);
 		
 		btnSiguiente = new JButton(">>");
@@ -212,25 +218,49 @@ public class VentanaJuego extends JFrame implements ActionListener{
 		});
 		btnSiguiente.setEnabled(false);
 		btnSiguiente.setFont(new Font("Arial Black", Font.BOLD, 24));
-		btnSiguiente.setBounds(753, 147, 80, 80);
+		btnSiguiente.setBounds(775, 124, 80, 80);
 		panelJuego.add(btnSiguiente);
 		
 		lblAvance = new JLabel("0/0");
 		lblAvance.setEnabled(false);
 		lblAvance.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		lblAvance.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAvance.setBounds(619, 154, 124, 67);
+		lblAvance.setBounds(641, 131, 124, 67);
 		panelJuego.add(lblAvance);
 		
 		txtNotas = new TextArea();
 		txtNotas.setEditable(false);
-		txtNotas.setBounds(529, 301, 363, 259);
+		txtNotas.setBounds(529, 254, 363, 259);
+		//txtNotas.setVisible(false);
 		panelJuego.add(txtNotas);
-		txtNotas.setVisible(false);
+		
+		btnReiniciar = new JButton("Reiniciar");
+		btnReiniciar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				mover(0);
+			}
+		});
+		btnReiniciar.setEnabled(false);
+		btnReiniciar.setBounds(731, 43, 124, 33);
+		panelJuego.add(btnReiniciar);
+		
+		btnExportarSolucin = new JButton("Exportar soluci\u00F3n");
+		btnExportarSolucin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exportarClicked();
+			}
+		});
+		btnExportarSolucin.setEnabled(false);
+		btnExportarSolucin.setBounds(632, 526, 159, 23);
+		panelJuego.add(btnExportarSolucin);
+		
+		lblRutaexportacion = new JLabel("");
+		lblRutaexportacion.setBounds(529, 555, 500, 23);
+		panelJuego.add(lblRutaexportacion);
+		
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -276,8 +306,7 @@ public class VentanaJuego extends JFrame implements ActionListener{
 				mensaje = ControladorPrincipal.getInstance().evaluarArchivo(ruta);
 				titulo = "Error al cargar el archivo";
 				
-				txtNotas.setText("Archivo base:\n" + ruta);
-				txtNotas.setVisible(true);
+				txtNotas.setText("Archivo base:\n" + ruta + "\n\n");
 			}else if(item.getSource() == mntmManual){
 					
 			}
@@ -335,26 +364,50 @@ public class VentanaJuego extends JFrame implements ActionListener{
 		
 		btnResolver.setEnabled(false);
 		btnAtras.setEnabled(false);
+		lblAvance.setText("0/0");
 		btnSiguiente.setEnabled(false);
-		txtNotas.setVisible(false);
+		btnReiniciar.setEnabled(false);
+		txtNotas.setText("");
+		btnExportarSolucin.setEnabled(false);
+		lblRutaexportacion.setText("");
 	}
 	
 	private void mover(int mov){
 		ControladorPrincipal cp = ControladorPrincipal.getInstance();
-		if(mov == 1){
+		if(mov == 0){
+			pintarEstado(cp.getEstadoInicial());
+			if(cp.isInicio()){
+				btnAtras.setEnabled(false);
+			}
+			if(!cp.isFin()){
+				btnSiguiente.setEnabled(true);
+			}
+		}else if(mov == 1){
 			pintarEstado(cp.getEstadoSiguiente());
 			if(cp.isFin()){
 				btnSiguiente.setEnabled(false);
 			}
-			btnAtras.setEnabled(true);
+			if(!cp.isInicio()){
+				btnAtras.setEnabled(true);
+			}
 		}else if(mov == -1){
 			pintarEstado(cp.getEstadoAnterior());
 			if(cp.isInicio()){
 				btnAtras.setEnabled(false);
 			}
-			btnSiguiente.setEnabled(true);
+			if(!cp.isFin()){
+				btnSiguiente.setEnabled(true);
+			}
 		}
 		
 		lblAvance.setText(cp.getAvance());
+	}
+	
+	private void exportarClicked(){
+		if(ControladorPrincipal.getInstance().exportarPartida()){
+			lblRutaexportacion.setText(ControladorPrincipal.getInstance().getRutaExportada());
+		}else{
+			JOptionPane.showConfirmDialog(this, "Se produjo un error al crear el archivo.", "ERROR", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

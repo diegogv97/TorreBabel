@@ -60,6 +60,20 @@ public class Estado {
         }
         System.out.println();
     }
+    
+    public String torreToString(){
+    	String torreS = "";
+    	
+    	for(int fil = 0; fil < filas; fil++){
+            for(int col = 0; col < columnas; col++){
+            	torreS += torre[fil][col] + "\t";
+            }
+            torreS += "\n";
+        }
+    	torreS += "\n";
+        
+        return torreS;
+    }
   
     public void rotarFilaDer(int indexFila){
         char temp[] = new char[columnas];

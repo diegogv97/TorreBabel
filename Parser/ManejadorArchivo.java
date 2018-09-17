@@ -1,7 +1,11 @@
 package Parser;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.OutputStreamWriter;
+import java.util.Date;
 
 public class ManejadorArchivo {
 
@@ -33,5 +37,47 @@ public class ManejadorArchivo {
 		}
 		
 		return contenidoArchivo;
+	}
+	
+	public static boolean escribirArchivo(String ruta, String contenido){
+		try{
+			FileOutputStream fos = new FileOutputStream(ruta);
+			
+	        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+	
+	        String[] content = contenido.split("\n");
+	        //Escribimos en el archivo con el metodo write
+	        for(int cont = 0; cont < content.length; cont++){
+	        	bw.write(content[cont]);
+	        	bw.newLine();
+	        }
+	        //Cerramos la conexion
+	        bw.close();
+	        return true;
+		}catch(Exception e){
+			//System.out.println("Error al crear archivo de salida");
+			System.out.println(e.getMessage());
+		}
+		
+		return false;
+	}
+	
+	public static String definirNombreArchivo(String ruta){
+		String[] partesRuta = ruta.split("\\\\");
+		
+		int ind = partesRuta.length - 1;
+		String[] nom = partesRuta[ind].split("\\.");
+		String nombre = nom[0];
+		partesRuta[ind] = nombre + "[SOLUCIONADO].txt";// + new Date() + ".txt";
+		
+		ruta = "";
+		for(int i = 0; i <= ind; i++){
+			ruta += partesRuta[i];
+			if(i != ind){
+				ruta += "\\";
+			}
+		}
+		
+		return ruta;
 	}
 }
