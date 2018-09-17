@@ -47,6 +47,7 @@ public class VentanaJuego extends JFrame implements ActionListener{
 	private JButton btnExportarSolucin;
 	
 	public VentanaJuego() {
+		setTitle("Solucionador de la Torre de Babel");
 		
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
