@@ -14,6 +14,7 @@ public class ControladorPrincipal {
 	
 	private static final ControladorPrincipal ourInstance = new ControladorPrincipal();
 	
+	private boolean isArchivo = false;
 	private ManejadorArchivo manejadorArchivo;
 	private String rutaArchivoBase, rutaArchivoExportado;
 	private Parser parser;
@@ -28,7 +29,7 @@ public class ControladorPrincipal {
     }
 	
 	public String evaluarArchivo(String ruta){
-		
+		isArchivo = true;
 		rutaArchivoBase = ruta;
 		indexLista = -1;
 		
@@ -46,6 +47,23 @@ public class ControladorPrincipal {
 			}
 		}else{
 			mensaje = "Error al leer el archivo";
+		}
+		
+		return mensaje;
+	}
+	
+	public String evaluarEntradaManual(String contenido){
+		isArchivo = false;
+		rutaArchivoBase = "";
+		String mensaje = "";
+		
+		parser = new Parser();
+		System.out.println(contenido);
+		mensaje = parser.evaluarCompleto(contenido);
+			
+		if(mensaje.isEmpty()){
+			String conUnido = unirContenido(contenido);
+			definirConfiguraciones(conUnido);
 		}
 		
 		return mensaje;
@@ -141,14 +159,21 @@ public class ControladorPrincipal {
 	}
 	
 	public String getCaminoToString(){
-		String solucion = "Archivo base:\n" + rutaArchivoBase + "\n\n" + "Configuración inicial:\n" + aEstrella.getCaminoString(aEstrella.getMeta(), "") +
+		String solucion = "";
+		if(isArchivo){
+			solucion += "Archivo base:\n" + rutaArchivoBase;
+		}else{
+			solucion += "Entrada manual";
+		}
+		
+		solucion += "\n\n" + "Configuración inicial:\n" + aEstrella.getCaminoString(aEstrella.getMeta(), "") +
 				"------ Configuración final alcanzada ------";
 		
 		return solucion;
 	}
 	
-	public boolean exportarPartida(){
-		rutaArchivoExportado = manejadorArchivo.definirNombreArchivo(rutaArchivoBase);
+	public boolean exportarPartida(String ruta){
+		rutaArchivoExportado = manejadorArchivo.definirNombreArchivo(ruta, rutaArchivoBase);
 		return manejadorArchivo.escribirArchivo(rutaArchivoExportado, getCaminoToString());
 	}
 	
