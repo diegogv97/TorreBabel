@@ -62,21 +62,30 @@ public class ManejadorArchivo {
 		return false;
 	}
 	
-	public static String definirNombreArchivo(String ruta){
-		String[] partesRuta = ruta.split("\\\\");
-		
-		int ind = partesRuta.length - 1;
-		String[] nom = partesRuta[ind].split("\\.");
-		String nombre = nom[0];
-		partesRuta[ind] = nombre + "[SOLUCIONADO].txt";// + new Date() + ".txt";
-		
-		ruta = "";
-		for(int i = 0; i <= ind; i++){
-			ruta += partesRuta[i];
-			if(i != ind){
-				ruta += "\\";
+	public static String definirNombreArchivo(String nruta, String ruta){
+		if(!ruta.isEmpty()){
+			String[] partesRuta = ruta.split("\\\\");
+			
+			int ind = partesRuta.length - 1;
+			String[] nom = partesRuta[ind].split("\\.");
+			String nombre = nom[0];
+			partesRuta[ind] = nombre + "[SOLUCIONADO].txt";// + new Date() + ".txt";
+			
+			ruta = "";
+			for(int i = 0; i <= ind; i++){
+				ruta += partesRuta[i];
+				if(i != ind){
+					ruta += "\\";
+				}
 			}
+		}else{
+			Date d = new Date();
+			
+			String nombre = "TorreBabel" + d.getDay() + "-" + d.getMonth() + "-" + d.getYear() +
+					"_" + d.getHours() + ":" + d.getMinutes() + "[SOLUCIONADO].txt";
+			ruta = nruta + "\\" + nombre;
 		}
+		
 		
 		return ruta;
 	}

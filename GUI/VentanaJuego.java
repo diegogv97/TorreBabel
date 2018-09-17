@@ -47,6 +47,7 @@ public class VentanaJuego extends JFrame implements ActionListener{
 	private JButton btnExportarSolucin;
 	
 	public VentanaJuego() {
+		setTitle("Solucionador de la Torre de Babel");
 		
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -299,7 +300,9 @@ public class VentanaJuego extends JFrame implements ActionListener{
 		String mensaje = "";
 		String titulo = "";
 		if(item.getSource() == mntmNuevo){
-			limpiarJuego();
+			if(JOptionPane.showConfirmDialog(this, "¿Está seguro que desea crear una solución nueva?", "Nueva solución", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION){
+				limpiarJuego();
+			}
 		}else{
 			if(item.getSource() == mntmCargarArchivo){
 				String ruta = abrirExplorador();
@@ -307,22 +310,37 @@ public class VentanaJuego extends JFrame implements ActionListener{
 				titulo = "Error al cargar el archivo";
 				
 				txtNotas.setText("Archivo base:\n" + ruta + "\n\n");
-			}else if(item.getSource() == mntmManual){
-					
-			}
-			
-			if(!mensaje.isEmpty()){
-				JOptionPane.showConfirmDialog(this, mensaje, titulo, JOptionPane.ERROR_MESSAGE);
-			}else{
 				
-				pintarEstado(ControladorPrincipal.getInstance().getEstadoActual());
-				btnResolver.setEnabled(true);
+				if(!mensaje.isEmpty()){
+					JOptionPane.showConfirmDialog(this, mensaje, titulo, JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+				}else{
+					
+					pintarEstado(ControladorPrincipal.getInstance().getEstadoActual());
+					btnResolver.setEnabled(true);
+				}
+			}else if(item.getSource() == mntmManual){
+				Entrada_Manual entradaManual = new Entrada_Manual(this);
+				entradaManual.setVisible(true);
 			}
 		}
+	}
+	
+	public void runManualText(String contenido){
+		String mensaje = "";
+		String titulo = "";
+		
+		mensaje = ControladorPrincipal.getInstance().evaluarEntradaManual(contenido);
+		titulo = "Error al cargar el archivo";
+		
+		txtNotas.setText("Entrada manual:\n" + contenido + "\n\n");
+		
+		if(!mensaje.isEmpty()){
+			JOptionPane.showConfirmDialog(this, mensaje, titulo, JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+		}else{
 			
-		
-		
-		
+			pintarEstado(ControladorPrincipal.getInstance().getEstadoActual());
+			btnResolver.setEnabled(true);
+		}
 	}
 	
 	private void pintarEstado(char[][] torre){
@@ -404,10 +422,22 @@ public class VentanaJuego extends JFrame implements ActionListener{
 	}
 	
 	private void exportarClicked(){
-		if(ControladorPrincipal.getInstance().exportarPartida()){
-			lblRutaexportacion.setText(ControladorPrincipal.getInstance().getRutaExportada());
-		}else{
-			JOptionPane.showConfirmDialog(this, "Se produjo un error al crear el archivo.", "ERROR", JOptionPane.ERROR_MESSAGE);
+		if(JOptionPane.showConfirmDialog(this, "¿Está seguro que desea crear un archivo con la solución?", "Exportar Archivo", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION){
+			String ruta = "";
+			
+			JFileChooser sel = new JFileChooser();
+			sel.setCurrentDirectory(new java.io.File("."));
+		    sel.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int opcion = sel.showOpenDialog(getContentPane());
+			if(opcion == sel.APPROVE_OPTION){
+				ruta = sel.getCurrentDirectory().getPath();
+				
+				if(ControladorPrincipal.getInstance().exportarPartida(ruta)){
+					lblRutaexportacion.setText(ControladorPrincipal.getInstance().getRutaExportada());
+				}else{
+					JOptionPane.showConfirmDialog(this, "Se produjo un error al crear el archivo.", "ERROR", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+				}
+			}
 		}
 	}
 }
