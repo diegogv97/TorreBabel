@@ -38,8 +38,8 @@ public class ControladorPrincipal {
 		if(!contenido.equals("ERROR")){
 			//Sigue con el parser
 			parser = new Parser();
-			System.out.println(contenido);
-			mensaje = parser.evaluarCompleto(contenido);
+			//System.out.println(contenido);
+			mensaje = parser.evaluarCompleto(contenido, true);
 			
 			if(mensaje.isEmpty()){
 				String conUnido = unirContenido(contenido);
@@ -58,8 +58,8 @@ public class ControladorPrincipal {
 		String mensaje = "";
 		
 		parser = new Parser();
-		System.out.println(contenido);
-		mensaje = parser.evaluarCompleto(contenido);
+		//System.out.println(contenido);
+		mensaje = parser.evaluarCompleto(contenido, false);
 			
 		if(mensaje.isEmpty()){
 			String conUnido = unirContenido(contenido);

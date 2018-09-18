@@ -14,7 +14,7 @@ public class Parser {
 	}
 	
 	
-	public String evaluarCompleto(String contenido){
+	public String evaluarCompleto(String contenido, boolean isArchivo){
 		String mensaje = "";
 		String[] lineas = contenido.split("\n");
 		
@@ -43,6 +43,13 @@ public class Parser {
 			}
 			if(!mensaje.isEmpty()){
 				String encabezado = "Error en la linea " + filaError + ". ";
+				if(!isArchivo){
+					if(filaError > 6){
+						filaError -= 6;
+					}
+					encabezado = "Error en la linea " + filaError + ". ";
+				}
+				
 				if(filaError > 5){
 					encabezado += "(Configuracion final)\nError: ";
 				}else{
@@ -50,8 +57,19 @@ public class Parser {
 				}
 				mensaje = encabezado + mensaje;
 			}
+		}else if(lineas.length > 11){
+			if(isArchivo){
+				mensaje = "El archivo contiene demasiadas lineas";
+			}else{
+				mensaje = "Cada entrada debe contener 5 líneas";
+			}
+			
 		}else{
-			mensaje = "El archivo contiene demasiadas lineas";
+			if(isArchivo){
+				mensaje = "El archivo contiene muy pocas lineas";
+			}else{
+				mensaje = "Cada entrada debe contener 5 líneas";
+			}
 		}
 		
 		return mensaje;
@@ -85,7 +103,7 @@ public class Parser {
 			case 2:
 				return "Primera fila contiene mas de 3 topes ('n')";
 			case 3:
-				return "Primera fila contiene menis de 3 topes ('n')";
+				return "Primera fila contiene menos de 3 topes ('n')";
 			case 4:
 				return "Hay mas de una muesca vacia ('e')";
 			case 5:
