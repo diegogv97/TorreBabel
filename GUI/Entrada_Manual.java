@@ -33,13 +33,15 @@ public class Entrada_Manual extends JDialog {
 	int cantN = 0;
 	
 	public Entrada_Manual(VentanaJuego parent) {
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		this.parent = parent;
 		
 		setResizable(false);
 		setModal(true);
 		getContentPane().setLayout(null);
 		setTitle("Entrada manual");
-		setBounds(200, 100, 563, 400);
+		setBounds(parent.getX()+150, parent.getY()+100, 563, 400);
+		
 		
 		JLabel lblIngreseLasConfiguraciones = new JLabel("Ingrese la configuraci\u00F3n inicial y final de la torre que desea resolver:");
 		lblIngreseLasConfiguraciones.setFont(new Font("Tahoma", Font.BOLD, 14));

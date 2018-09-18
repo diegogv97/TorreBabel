@@ -69,7 +69,7 @@ public class ManejadorArchivo {
 			int ind = partesRuta.length - 1;
 			String[] nom = partesRuta[ind].split("\\.");
 			String nombre = nom[0];
-			partesRuta[ind] = nombre + "[SOLUCIONADO].txt";// + new Date() + ".txt";
+			partesRuta[ind] = nombre + "[SOLUCIONADO].txt";
 			
 			ruta = "";
 			for(int i = 0; i <= ind; i++){
@@ -81,8 +81,8 @@ public class ManejadorArchivo {
 		}else{
 			Date d = new Date();
 			
-			String nombre = "TorreBabel" + d.getDay() + "-" + d.getMonth() + "-" + d.getYear() +
-					"_" + d.getHours() + ":" + d.getMinutes() + "[SOLUCIONADO].txt";
+			String nombre = "TorreBabel[SOLUCIONADO]" + d.getDay() + "-" + d.getMonth() + "-" + d.getYear() +
+					"_" + d.getHours() + ":" + d.getMinutes() + ".txt";
 			ruta = nruta + "\\" + nombre;
 		}
 		

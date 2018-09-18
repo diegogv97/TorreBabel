@@ -26,7 +26,7 @@ import java.awt.TextArea;
 public class VentanaJuego extends JFrame implements ActionListener{
 	
 	JPanel panelJuego;
-	JMenuItem mntmNuevo, mntmCargarArchivo, mntmManual;
+	JMenuItem mntmNuevo, mntmCargarArchivo, mntmManual, mntmInstruccionesDeUso, mntmFormatosDeEntrada, mntmExportarSolucion;
 	int[] posMVacia = {22, 142, 262, 382};
 	
 	JButton btnResolver, btnReiniciar, btnAtras, btnSiguiente;
@@ -47,9 +47,12 @@ public class VentanaJuego extends JFrame implements ActionListener{
 	private JButton btnExportarSolucin;
 	
 	public VentanaJuego() {
+		setResizable(false);
 		setTitle("Solucionador de la Torre de Babel");
 		
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//setExtendedState(JFrame.MAXIMIZED_BOTH); // Pantalla completa
+		setSize(920, 640);
+		setLocationRelativeTo(null); // Centrado en la pantalla
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -75,6 +78,18 @@ public class VentanaJuego extends JFrame implements ActionListener{
 		
 		JMenu mnAyuda = new JMenu("Ayuda");
 		menuBar.add(mnAyuda);
+		
+		mntmInstruccionesDeUso = new JMenuItem("Instrucciones de uso");
+		mntmInstruccionesDeUso.addActionListener(this);
+		mnAyuda.add(mntmInstruccionesDeUso);
+		 
+		mntmFormatosDeEntrada = new JMenuItem("Formatos de entrada");
+		mntmFormatosDeEntrada.addActionListener(this);
+		mnAyuda.add(mntmFormatosDeEntrada);
+		
+		mntmExportarSolucion = new JMenuItem("Exportar soluci\u00F3n");
+		mntmExportarSolucion.addActionListener(this);
+		mnAyuda.add(mntmExportarSolucion);
 		getContentPane().setLayout(null);
 		
 		panelJuego = new JPanel();
@@ -299,6 +314,18 @@ public class VentanaJuego extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent item) {
 		String mensaje = "";
 		String titulo = "";
+		// Items menu Ayuda
+		if(item.getSource() == mntmInstruccionesDeUso){
+			Ventana_Ayuda ven = new Ventana_Ayuda(this, 0);
+			ven.setVisible(true);
+		}else if(item.getSource() == mntmFormatosDeEntrada){
+			Ventana_Ayuda ven = new Ventana_Ayuda(this, 1);
+			ven.setVisible(true);
+		}else if(item.getSource() == mntmExportarSolucion){
+			Ventana_Ayuda ven = new Ventana_Ayuda(this, 2);
+			ven.setVisible(true);
+		}else
+		// Items menu Inicio
 		if(item.getSource() == mntmNuevo){
 			if(JOptionPane.showConfirmDialog(this, "¿Está seguro que desea crear una solución nueva?", "Nueva solución", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION){
 				limpiarJuego();
@@ -309,12 +336,10 @@ public class VentanaJuego extends JFrame implements ActionListener{
 				mensaje = ControladorPrincipal.getInstance().evaluarArchivo(ruta);
 				titulo = "Error al cargar el archivo";
 				
-				txtNotas.setText("Archivo base:\n" + ruta + "\n\n");
-				
 				if(!mensaje.isEmpty()){
 					JOptionPane.showConfirmDialog(this, mensaje, titulo, JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 				}else{
-					
+					txtNotas.setText("Archivo base:\n" + ruta + "\n\n");
 					pintarEstado(ControladorPrincipal.getInstance().getEstadoActual());
 					btnResolver.setEnabled(true);
 				}
@@ -332,12 +357,10 @@ public class VentanaJuego extends JFrame implements ActionListener{
 		mensaje = ControladorPrincipal.getInstance().evaluarEntradaManual(contenido);
 		titulo = "Error al cargar el archivo";
 		
-		txtNotas.setText("Entrada manual:\n" + contenido + "\n\n");
-		
 		if(!mensaje.isEmpty()){
 			JOptionPane.showConfirmDialog(this, mensaje, titulo, JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
 		}else{
-			
+			txtNotas.setText("Entrada manual:\n" + contenido + "\n\n");
 			pintarEstado(ControladorPrincipal.getInstance().getEstadoActual());
 			btnResolver.setEnabled(true);
 		}
