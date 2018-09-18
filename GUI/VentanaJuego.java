@@ -37,12 +37,12 @@ public class VentanaJuego extends JFrame implements ActionListener{
 	
 	TextArea txtNotas;
 	
-	ImageIcon imagen = new ImageIcon("src/Imagenes/Fondo.png");
-	ImageIcon imgMuescaVacia = new ImageIcon("src/Imagenes/Vacia.png");
-	ImageIcon imgBolaB = new ImageIcon("src/Imagenes/BolaB.png");
-	ImageIcon imgBolaG = new ImageIcon("src/Imagenes/BolaG.png");
-	ImageIcon imgBolaW = new ImageIcon("src/Imagenes/BolaW.png");
-	ImageIcon imgBolaY = new ImageIcon("src/Imagenes/BolaY.png");
+	ImageIcon imagen = new ImageIcon(getClass().getResource("/Imagenes/Fondo.png"));
+	ImageIcon imgMuescaVacia = new ImageIcon(getClass().getResource("/Imagenes/Vacia.png"));
+	ImageIcon imgBolaB = new ImageIcon(getClass().getResource("/Imagenes/BolaB.png"));
+	ImageIcon imgBolaG = new ImageIcon(getClass().getResource("/Imagenes/BolaG.png"));
+	ImageIcon imgBolaW = new ImageIcon(getClass().getResource("/Imagenes/BolaW.png"));
+	ImageIcon imgBolaY = new ImageIcon(getClass().getResource("/Imagenes/BolaY.png"));
 	ImageIcon bolaB, bolaG, bolaW, bolaY;
 	private JButton btnExportarSolucin;
 	
