@@ -126,32 +126,55 @@ public class AStar {
         int colVacia = nuevo.getiColMuescaVacia();
         int filVacia = nuevo.getiFilMuestaVacia();
         if (filVacia == 0){
-            nuevo.subirBola(filVacia+1, colVacia);
-            int costo = nActual.getValorG() + COSTO_VERTICAL;
-            agregarAbierto(nActual, costo, nuevo, tipoMovimiento.SUBIR_BOLITA, (filVacia+2), (colVacia+1));
-        }
-        else if(filVacia == meta.getEstadoTorre().getFilas()-1){ //no intente bajar una pared
-            if(nuevo.getTorre()[filVacia-1][colVacia] != 'n'){
-                nuevo.bajarBola(filVacia-1, colVacia);
+            for (int i = 0; i < filas-1; i++){
+                nuevo.subirBola(filVacia+1, colVacia);
                 int costo = nActual.getValorG() + COSTO_VERTICAL;
-                agregarAbierto(nActual, costo, nuevo, tipoMovimiento.BAJAR_BOLITA, (filVacia), (colVacia+1));
+                agregarAbierto(nActual, costo, nuevo, tipoMovimiento.SUBIR_BOLITA, (filVacia+2), (colVacia+1));
+                temp = new char[filas][columnas]; 
+                copiarDatosTorre(temp, nuevo.getTorre());
+                nuevo = new Estado(filas, columnas, temp); 
+            }
+            
+        }
+        else if(filVacia == meta.getEstadoTorre().getFilas()-1){ 
+            if(nuevo.getTorre()[filVacia-1][colVacia] != 'n'){  //no intente bajar una pared
+                for (; filVacia > 0; filVacia--){
+                    nuevo.bajarBola(filVacia-1, colVacia);
+                    int costo = nActual.getValorG() + COSTO_VERTICAL;
+                    agregarAbierto(nActual, costo, nuevo, tipoMovimiento.BAJAR_BOLITA, (filVacia), (colVacia+1));;
+                    temp = new char[filas][columnas]; 
+                    copiarDatosTorre(temp, nuevo.getTorre());
+                    nuevo = new Estado(filas, columnas, temp); 
+                }
             }
         }
         else{
             if(nuevo.getTorre()[filVacia-1][colVacia] != 'n'){  //no intente bajar una pared
                 temp = new char[filas][columnas]; 
                 copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
-                nuevo = new Estado(filas, columnas, temp);
-                nuevo.bajarBola(filVacia-1, colVacia);
-                int costo = nActual.getValorG() + COSTO_VERTICAL;
-                agregarAbierto(nActual, costo, nuevo, tipoMovimiento.BAJAR_BOLITA, (filVacia), (colVacia+1));
+                nuevo = new Estado(filas, columnas, temp);    
+                for (; filVacia > 0; filVacia--){
+                    nuevo.bajarBola(filVacia-1, colVacia);
+                    int costo = nActual.getValorG() + COSTO_VERTICAL;
+                    agregarAbierto(nActual, costo, nuevo, tipoMovimiento.BAJAR_BOLITA, (filVacia), (colVacia+1));
+                    temp = new char[filas][columnas]; 
+                    copiarDatosTorre(temp, nuevo.getTorre());
+                    nuevo = new Estado(filas, columnas, temp); 
+                }
             }
             int costo = nActual.getValorG() + COSTO_VERTICAL;
             temp = new char[filas][columnas]; 
             copiarDatosTorre(temp, nActual.getEstadoTorre().getTorre());
             nuevo = new Estado(filas, columnas, temp);
-            nuevo.subirBola(filVacia+1, colVacia);
-            agregarAbierto(nActual, costo, nuevo, tipoMovimiento.SUBIR_BOLITA, (filVacia+2), (colVacia+1));
+            filVacia = nuevo.getiFilMuestaVacia();
+            for (; filVacia < filas-1; filVacia++){
+                nuevo.subirBola(filVacia+1, colVacia);
+                costo = nActual.getValorG() + COSTO_VERTICAL;
+                agregarAbierto(nActual, costo, nuevo, tipoMovimiento.SUBIR_BOLITA, (filVacia+2), (colVacia+1));
+                temp = new char[filas][columnas]; 
+                copiarDatosTorre(temp, nuevo.getTorre());
+                nuevo = new Estado(filas, columnas, temp); 
+            }
         }
         
         
