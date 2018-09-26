@@ -75,7 +75,13 @@ public class AStar {
         //verifico que el nodo no esté en cerrados
         for(Nodo n : cerrados){
             if (n.getEstadoTorre().isTorreIgual(nuevo)){
-                return; //lo encontré cerrado, termino
+                if(n.getValorG() > costo){
+                    n.setPredecesor(nActual);
+                    n.setMovmientoPredecesor(mov);
+                    n.setFilaMovPredecesor(filMov);
+                    n.setColMovPredecesor(colMov);
+                }
+                return; //encontró uno igual. termina
             }
         }
         //verifico los nodos abiertos
@@ -133,6 +139,7 @@ public class AStar {
                 temp = new char[filas][columnas]; 
                 copiarDatosTorre(temp, nuevo.getTorre());
                 nuevo = new Estado(filas, columnas, temp); 
+                filVacia++;
             }
             
         }
@@ -188,6 +195,9 @@ public class AStar {
         }
         int h = calcH(eActual);
         Nodo nActual = new Nodo(0, h, null, null, eActual, 0,0);
+        if(eActual.isTorreIgual(meta.getEstadoTorre())){
+            return;
+        }
         while (true){
             nodosProximos(nActual);
             int iMenor = indexAbiertoMenorF();

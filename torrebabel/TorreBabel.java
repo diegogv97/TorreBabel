@@ -55,8 +55,7 @@ public class TorreBabel {
 		this.eFinal = eFinal;
 	}
 	
-    
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         char torre[][] = new char[5][4];
         
         torre[0][0] = 'n';
@@ -122,7 +121,7 @@ public class TorreBabel {
         System.out.println("");
         aEstrella.printCamino(aEstrella.getMeta());
     
-    }
+    }*/
     
 }
 
